@@ -1,6 +1,14 @@
 import { Component } from '@angular/core';
 import 'reflect-metadata';
 import { range } from 'rxjs';
+import { IPet } from './class/interface/IPet';
+import { Show_console } from './class/show_console';
+import { Show_file } from './class/show_file';
+import { Dog } from './class/dog';
+import { Cat } from './class/cat';
+import { Parrot } from './class/parrot';
+import { Fish } from './class/fish';
+import { Pet } from './class/pet';
 const formatMetadataKey = Symbol("format");
 const requiredMetadataKey = Symbol("required");
 @Component({
@@ -13,9 +21,8 @@ export class HomePage {
   //Приклад з попередньої лекції. Приклад1
   ras_interface() {
     let show = new Show_console();
-    let show1 = new Show_file();
-    let dog = new Dog("Собака", "Рада", "Рижа", new Date(2019, 4, 12), show);
 
+    let dog = new Dog("Собака", "Рада", "Рижа", new Date(2019, 4, 12), show);
     dog.run();
     dog.speak();
     dog.bringToy("Кістка");
@@ -25,11 +32,9 @@ export class HomePage {
     cat.speak();
     cat.bringMouse();
     let parrot = new Parrot("Папуга", "Попка", "Зелений", new Date(1996, 2, 2), show);
-
     parrot.fly();
     parrot.speak();
     let fish = new Fish("Рибка", "Дорі", "Золота", new Date(2020, 2, 2), show);
-
     fish.swim();
   }
   //Приклад2
@@ -49,19 +54,36 @@ export class HomePage {
     let result5 = this.logAndReturn(show);
     let c = 25 + 3;
     let result6 = this.logAndReturn("Generic" + c);
+    this.logAndReturn(33);
   }
   //Приклад3
   ras_generic2() {
+    let show1 = new Show_file();
     let show = new Show_console();
     let collention: PetCollection<Pet> = new PetCollection();
-    collention.add(new Fish("Рибка", "Долі", "Золота", new Date(2010, 4, 12), show))
-    collention.add(new Dog("Собака", "Рада", "Рижа", new Date(2019, 4, 12), show));
+    collention.add(new Fish("Рибка", "Рада", "Золота", new Date(2010, 4, 12), show1))
+    collention.add(new Dog("Собака", "Рада2", "Рижа", new Date(2019, 4, 12), show));
     collention.add(new Cat("Кішка", "Мурка", "Рижа", new Date(2017, 2, 2), show));
     let item = collention.getItemByName("Рада");
     console.log(item);
-    let item1 = <Dog>item;
-    item1.speak();
-    item1.run();
+    try {
+      if (item as Dog) {
+        let item1 = <Dog>item;
+        if ('speak' in item1)
+          item1.speak();
+        if ('run' in item1)
+          item1.run();
+        // !Перевірка чи існує метод
+        if ('guard' in item1)
+          item1.guard;
+      }
+      else
+        console.log("Це не собака")
+    }
+    catch
+    {
+
+    }
   }
   //Приклад4
   ras() {
@@ -77,224 +99,19 @@ export class HomePage {
   //Приклад 5
   ras_decorator() {
 
-    let m = new Module()
+    // let m = new Module()
+    let p = new Person("Ola");
+    p.print();
   }
   //Приклад 6
   ras_decorator_property() {
     let g = new Greeter("Олена");
     console.log(g.greet());
   }
-  //Приклад 7
-  // ras_decorator_parameters() {
-  //   let g = new Greeter1("Як справи?");
-  //   console.log(g.greet("Олена"));
-  //   // let name;
-  //   // console.log(g.greet(name));
-  // }
+
   constructor() { }
 
 
-}
-//Приклад 7
-// class Greeter1 {
-//   greeting: string;
-//   constructor(message: string) {
-//     this.greeting = message;
-//   }
-//   @validate
-//   greet(@required name: string): string {
-//     return "Привіт " + name + ", " + this.greeting;
-//   }
-// }
-// /**
-//  *
-// Декоратор @required додає запис метаданих, який позначає параметр як необхідний.
-// Потім декоратор @validate обгортає існуючий метод привітання у функцію,
-// яка перевіряє аргументи перед викликом вихідного методу.
-//  */
-// function required(
-//   target: Object,
-//   propertyKey: string | symbol,
-//   parameterIndex: number
-// ) {
-//   let existingRequiredParameters: number[] =
-//     Reflect.getOwnMetadata(requiredMetadataKey, target, propertyKey) || [];
-//   existingRequiredParameters.push(parameterIndex);
-//   Reflect.defineMetadata(
-//     requiredMetadataKey,
-//     existingRequiredParameters,
-//     target,
-//     propertyKey
-//   );
-// }
-// function validate(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<Function>
-// ): void
-// {
-//   let method = descriptor.value;
-//   descriptor.value = function () {
-//     let requiredParameters: number[] = Reflect.getOwnMetadata(
-//       requiredMetadataKey,
-//       target,
-//       propertyName
-//     );
-//     if (requiredParameters) {
-//       for (let parameterIndex of requiredParameters) {
-//         if (
-//           parameterIndex >= arguments.length ||
-//           arguments[parameterIndex] === undefined
-//         ) {
-//           throw new Error("Помилка у параметрі.");
-//         }
-//       }
-//     }
-//     return method.apply(this, arguments);
-//   };
-// }
-//Приклад6
-class Greeter {
-  @format("Привіт, %s")
-  greeting: string;
-  constructor(message: string) {
-    this.greeting = message;
-  }
-  greet() {
-    let formatString = getFormat(this, "greeting");
-    return formatString.replace("%s", this.greeting);
-  }
-}
-/**
- Декоратор @format ("Привіт,% s") - це фабрика декораторів.
- Коли викликається @format ("Привіт,% s"), він додає запис метаданих для властивості
- за допомогою функції Reflect.metadata з бібліотеки reflect-metadata.
- Коли викликається getFormat, він читає значення метаданих для формату.
- */
-function format(formatString: string) {
-  return Reflect.metadata(formatMetadataKey, formatString);
-}
-function getFormat(target: any, propertyKey: string) {
-  return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
-}
-//Приклад5
-function myFirstDecorator(constructor: Function) {
-  console.log(constructor);
-}
-
-@myFirstDecorator
-class Module {
-  name: string = "";
-  age: number = 0;
-}
-//Приклад з попередньої лекції
-interface IPet {
-  name: string;
-  //Властивості лише для читання
-  readonly age: number;
-  readonly color: string;
-  readonly bday: Date;
-};
-interface IRun {
-  run(): void;
-}
-interface IToy {
-  bringToy(toy: string): void
-}
-interface ISpeak {
-  speak(): void;
-}
-interface ISwim {
-  swim(): void;
-}
-interface IFly {
-  fly(): void;
-}
-abstract class Pet implements IPet {
-  type: string;
-  name: string;
-  //Властивості лише для читання
-  readonly color: string;
-  readonly bday: Date;
-  constructor(type: string, name: string, color: string, bday: Date, obj: IShow) {
-    this.type = type;
-    this.name = name;
-    this.color = color;
-    this.bday = bday;
-    obj.show(this.type, this.name, this.color, this.age);
-  }
-  // геттер для розрахунку віку
-  get age() {
-    const diff = new Date(new Date().getTime() - this.bday.getTime());
-
-    return diff.getFullYear() - new Date(0).getFullYear();
-  }
-
-}
-interface IShow {
-  show(type: string, name: string, color: string, age: number): void
-}
-class Show_console implements IShow {
-  show(type: string, name: string, color: string, age: number) {
-    console.log("Я " + type + " на ім'я " + name);
-    console.log("Мій кольор  " + color);
-    console.log("Мій вік " + age + " років");
-  }
-}
-class Show_file implements IShow {
-  show(type: string, name: string, color: string, age: number) {
-
-  }
-}
-class Dog extends Pet implements IRun, IToy, ISpeak {
-
-  @log
-  speak() {
-    console.log("Гав-гав");
-  }
-  @log
-  run() {
-    console.log("Бігу зі швидкістю 10 км/ч");
-    return "V=10";
-  }
-  bringToy(toy: string) {
-    console.log("Моя улюблена іграшка " + toy);
-  }
-  guard() {
-    console.log("Вмію охраняти помешкання");
-  }
-}
-class Cat extends Pet implements IRun, ISpeak {
-
-
-  speak() {
-    console.log("Мяв-Мяв");
-  }
-  run() {
-    console.log("Бігу  зі швидкістю 15 км/ч");
-  }
-
-  bringMouse() {
-    console.log("Вмію ловити мишей");
-  }
-}
-class Parrot extends Pet implements IFly, ISpeak {
-
-  speak() {
-    console.log("Попка дурак");
-  }
-
-
-  fly() {
-    console.log("Я вмію літати");
-  }
-}
-class Fish extends Pet implements ISwim {
-
-
-  swim() {
-    console.log("Я плаваю під водою");
-  }
 }
 //Приклад3
 class PetCollection<T extends IPet> {
@@ -341,38 +158,67 @@ function log(target: Object, key: string, value: any) {
 //Приклад5
 @logClass
 class Person {
-
   public name: string;
-  public surname: string;
-
-  constructor(name: string, surname: string) {
+  constructor(name: string) {
     this.name = name;
-    this.surname = surname;
+
+  }
+  print(): void {
+    console.log(this.name);
   }
 }
-function logClass(target: any) {
-
-  // зберігаємо посилання на вхідний конструктор
-  var original = target;
-
-  // допоміжна функція для генерації екземплярів класу
-  function construct(constructor: any, args: any) {
-    var c: any = function (this: any) {
-      return constructor.apply(this, args);
+// Тип декоратора - функція
+// Вхідний параметр target - конструктор
+function logClass<TFunction extends Function>(target: TFunction): TFunction {
+  // створюємо новий конструктор
+  let newConstructor: Function = function (this: any, name: string) {
+    // Виводимо повідомлення про новий конструктор
+    console.log("Creating new instance");
+    // залишаємо ім'я яке було
+    this.name = name;
+    // установлюємо нову властивість вік
+    this.age = 23;
+    // пустановлюємо новий метод print
+    this.print = function (): void {
+      console.log(this.name, this.age);
     }
-    c.prototype = constructor.prototype;
-    return new c();
   }
-
-  // нова поведінка конструктора
-  var f: any = function (...args: any[]) {
-    console.log("New: " + original.name);
-    return construct(original, args);
-  }
-
-  // копіюємо прототип, щоб працював оператор instanceof
-  f.prototype = original.prototype;
-
-  // повертаємо новий конструктор (він перевизначить вихідний)
-  return f;
+  return <TFunction>newConstructor;
 }
+
+
+//Приклад6
+class Greeter {
+  @format("Привіт, %s")
+  greeting: string;
+  constructor(message: string) {
+    this.greeting = message;
+  }
+  greet() {
+    let formatString = getFormat(this, "greeting");
+    return formatString.replace("%s", this.greeting);
+  }
+}
+/**
+ Декоратор @format ("Привіт,% s") - це фабрика декораторів.
+ Коли викликається @format ("Привіт,% s"), він додає запис метаданих для властивості
+ за допомогою функції Reflect.metadata з бібліотеки reflect-metadata.
+ Коли викликається getFormat, він читає значення метаданих для формату.
+ */
+function format(formatString: string) {
+  return Reflect.metadata(formatMetadataKey, formatString);
+}
+function getFormat(target: any, propertyKey: string) {
+  return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
+}
+//Приклад5
+function myFirstDecorator(constructor: Function) {
+  console.log(constructor);
+}
+
+@myFirstDecorator
+class Module {
+  name: string = "";
+  age: number = 0;
+}
+
