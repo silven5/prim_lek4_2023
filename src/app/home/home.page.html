@@ -1,84 +1,88 @@
-<ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-title>
-            <h1>Приклади до лекції №4</h1>
-        </ion-title>
-    </ion-toolbar>
+<ion-header [translucent]="true" class="body">
+  <h1>Приклади до лекції №4</h1>
+
+  <div class="loader">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header class="card_title__font">
+      <ion-title size="large">High Cohesion + Low Coupling. Приклад</ion-title>
+    </ion-card-header>
+    <ion-card-content class="card_body__font">
+      <ion-button (click)="ras_interface()">Перегляд</ion-button>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header class="card_title__font">
+      <ion-card-title>Generic</ion-card-title>
+    </ion-card-header>
 
-    <ion-card>
-        <ion-card-header class="card_title__font">
-            <ion-title size="large">High Cohesion + Low Coupling. Приклад</ion-title>
+    <ion-card-content class="card_body__font">
+      Простий приклад Generic type
+    </ion-card-content>
+    <ion-button (click)="ras_generic1()">Go</ion-button>
+  </ion-card>
+  <ion-card>
+    <ion-card-header class="card_title__font">
+      <ion-card-title>Generic</ion-card-title>
+    </ion-card-header>
 
+    <ion-card-content class="card_body__font">
+      Колекція Generic type
+    </ion-card-content>
+    <ion-button (click)="ras_generic2()">Go</ion-button>
+  </ion-card>
+  <ion-card>
+    <ion-card-header class="card_title__font">
+      <ion-card-title>Декоратор методу</ion-card-title>
+    </ion-card-header>
 
-        </ion-card-header>
-        <ion-card-content class="card_body__font">
-            <ion-button (click)="ras_interface()">Перегляд</ion-button>
+    <ion-card-content class="card_body__font">
+      <ion-item>
+        Написати декоратор, який буде вести логування дій функції у файл.
+        Функція призначена для обчислення квадрату числа.
+      </ion-item>
+      <ion-button (click)="ras()">Go</ion-button>
+      <ion-item>
+        Написати декоратор методу, який вимірює час виконання методу та виводить
+        його у консоль.Тут приклад
+      </ion-item>
+      <ion-button (click)="calcTime()">Time</ion-button>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header class="card_title__font">
+      <ion-card-title>Декоратори та класи</ion-card-title>
+    </ion-card-header>
 
-
-        </ion-card-content>
-    </ion-card>
-    <ion-card>
-        <ion-card-header class="card_title__font">
-            <ion-card-title>Generic</ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content class="card_body__font">
-
-            Простий приклад Generic type
-
-
-        </ion-card-content>
-        <ion-button (click)="ras_generic1()">Go</ion-button>
-    </ion-card>
-    <ion-card>
-        <ion-card-header class="card_title__font">
-            <ion-card-title>Generic</ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content class="card_body__font">
-
-            Колекція Generic type
-
-
-        </ion-card-content>
-        <ion-button (click)="ras_generic2()">Go</ion-button>
-    </ion-card>
-    <ion-card>
-        <ion-card-header class="card_title__font">
-            <ion-card-title>Декоратор методу</ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content class="card_body__font">
-
-            Написати декоратор, який буде вести логування дій функції у файл. Функція призначена для обчислення квадрату числа.
-
-        </ion-card-content>
-        <ion-button (click)="ras()">Go</ion-button>
-    </ion-card>
-    <ion-card>
-        <ion-card-header class="card_title__font">
-            <ion-card-title>Декоратори та класи</ion-card-title>
-        </ion-card-header>
-
-
-        <ion-button (click)="ras_decorator()">Go</ion-button>
-    </ion-card>
-    <ion-card>
-        <ion-card-header class="card_title__font">
-            <ion-card-title>Декоратори та властивості</ion-card-title>
-        </ion-card-header>
-
-
-        <ion-button (click)="ras_decorator_property()">Go</ion-button>
-    </ion-card>
-    <!-- <ion-card>
-        <ion-card-header class="card_title__font">
-            <ion-card-title>Декоратори та параметри</ion-card-title>
-        </ion-card-header>
-
-        <ion-button (click)="ras_decorator_parameters()">Go</ion-button>
-    </ion-card> -->
+    <ion-button (click)="ras_decorator()">Go</ion-button>
+    <ion-button (click)="loadData()">ApiService</ion-button>
+    <ion-item>{{apiService.showData()}}</ion-item>
+    <ion-item>{{apiService1.showData()}}</ion-item>
+  </ion-card>
+  <ion-card>
+    <ion-card-header class="card_title__font">
+      <ion-card-title>Декоратори та властивості</ion-card-title>
+    </ion-card-header>
+    <form (ngSubmit)="onSubmit()">
+      <ion-input
+        placeholder="Login"
+        [(ngModel)]="username"
+        name="user"
+      ></ion-input>
+      <ion-button type="submit">Зареєструватися</ion-button>
+    </form>
+    <ion-item *ngIf="user">Користувач створений: {{ user.username }}</ion-item>
+  </ion-card>
 </ion-content>
